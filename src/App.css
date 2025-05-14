@@ -1,0 +1,95 @@
+/* App.css - Estilos para o App Quero Paz */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f7fa;
+  color: #333;
+  overscroll-behavior-y: none; /* Previne o bounce no iOS */
+}
+
+/* Estilos para os toggles */
+.toggle-checkbox {
+  right: 0;
+  z-index: 5;
+  border-color: #d1d5db;
+  transition: all 0.2s;
+}
+
+.toggle-checkbox:checked {
+  right: 0.5rem;
+  border-color: #3b82f6;
+  transform: translateX(100%);
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #3b82f6;
+}
+
+.toggle-label {
+  transition: background-color 0.2s;
+}
+
+/* Transições suaves */
+.transition-opacity {
+  transition-property: opacity;
+}
+
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+}
+
+.transition-all {
+  transition-property: all;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+/* Ajustes para notch e barras de sistema no iPhone */
+@supports (padding: max(0px)) {
+  header {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  
+  footer {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Ajustes para telas pequenas */
+@media (max-width: 375px) {
+  footer span {
+    font-size: 0.75rem;
+  }
+  
+  header h1 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Desabilita efeitos de highlight no toque */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Animação do ícone de proteção */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite ease-in-out;
+}
