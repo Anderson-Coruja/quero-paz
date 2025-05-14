@@ -1,5 +1,6 @@
 import storage from './storage';
 import notificationService from './notifications';
+import trackingService from './tracking';
 
 // Formata a hora atual para registro de chamadas
 const getFormattedTime = () => {
@@ -27,6 +28,10 @@ const callBlockerService = {
         };
         
         await storage.addSilencedCall(result.message);
+        
+        // Registra evento de chamada bloqueada (DDI)
+        trackingService.trackBlockedCall(phoneNumber, 'ddi_blocked');
+        
         if (settings.soundOnBlock) {
           await notificationService.notifyBlockedCall(phoneNumber);
         }
@@ -42,6 +47,13 @@ const callBlockerService = {
         };
         
         await storage.addPendingConfirmation(result.message);
+        
+        // Registra evento de confirmação pendente
+        trackingService.trackEvent(trackingService.EVENT_TYPES.CALL, 'pending_confirmation', {
+          phoneNumber,
+          timestamp: new Date().toISOString()
+        });
+        
         await notificationService.notifyPendingConfirmation(phoneNumber);
       } else {
         result = {
@@ -50,6 +62,10 @@ const callBlockerService = {
         };
         
         await storage.addSilencedCall(result.message);
+        
+        // Registra evento de chamada silenciada
+        trackingService.trackSilencedCall(phoneNumber);
+        
         if (settings.soundOnBlock) {
           await notificationService.notifySilencedCall(phoneNumber);
         }
@@ -60,6 +76,12 @@ const callBlockerService = {
         action: 'allow',
         message: `${phoneNumber} - Chamada permitida às ${getFormattedTime()}`
       };
+      
+      // Registra evento de chamada permitida
+      trackingService.trackEvent(trackingService.EVENT_TYPES.CALL, 'allowed', {
+        phoneNumber,
+        timestamp: new Date().toISOString()
+      });
     }
     
     return result;
@@ -70,6 +92,9 @@ const callBlockerService = {
     const message = `${phoneNumber} - Ligação bloqueada às ${getFormattedTime()}`;
     await storage.addSilencedCall(message);
     
+    // Registra evento de bloqueio manual
+    trackingService.trackBlockedCall(phoneNumber, 'manual_block');
+    
     return {
       action: 'block',
       message
@@ -78,6 +103,18 @@ const callBlockerService = {
   
   // Confirma um número como confiável (remove das pendências)
   async confirmAsTrusted(index) {
+    // Primeiro obtém os números pendentes para conseguir o número de telefone
+    const confirmations = await storage.getPendingConfirmations();
+    if (index >= 0 && index < confirmations.length) {
+      const phoneNumber = confirmations[index].split(' - ')[0];
+      
+      // Registra evento de confirmação de número confiável
+      trackingService.trackEvent(trackingService.EVENT_TYPES.USER, 'confirm_trusted', {
+        phoneNumber,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
     return await storage.removePendingConfirmation(index);
   },
   
@@ -87,6 +124,12 @@ const callBlockerService = {
     if (index >= 0 && index < confirmations.length) {
       const confirmation = confirmations[index];
       const phoneNumber = confirmation.split(' - ')[0];
+      
+      // Registra evento de rejeição de número
+      trackingService.trackEvent(trackingService.EVENT_TYPES.USER, 'reject_number', {
+        phoneNumber,
+        timestamp: new Date().toISOString()
+      });
       
       await this.blockNumber(phoneNumber);
       return await storage.removePendingConfirmation(index);
@@ -109,6 +152,13 @@ const callBlockerService = {
     const phoneNumber = isDDI ? 
       `+${Math.floor(Math.random() * 900) + 100} ${generatePhoneNumber()}` : 
       generatePhoneNumber();
+    
+    // Registra evento de simulação de chamada
+    trackingService.trackEvent(trackingService.EVENT_TYPES.CALL, 'simulated_call', {
+      phoneNumber,
+      isDDI,
+      timestamp: new Date().toISOString()
+    });
     
     return await this.processIncomingCall(phoneNumber, isDDI);
   }

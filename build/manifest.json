@@ -1,25 +1,66 @@
 {
   "short_name": "Quero Paz",
-  "name": "Quero Paz - Bloqueador de Chamadas",
+  "name": "Quero Paz - Tranquilidade e Bem-estar",
+  "description": "Um aplicativo para gerenciar chamadas, mensagens e privacidade com foco em bem-estar.",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/x-icon",
+      "purpose": "any maskable"
     },
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#3b82f6",
-  "background_color": "#f5f7fa"
+  "orientation": "portrait",
+  "theme_color": "#4A90E2",
+  "background_color": "#F5F7FA",
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Tela inicial do Quero Paz"
+    },
+    {
+      "src": "screenshots/settings.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Configurações de privacidade"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Sincronizar",
+      "short_name": "Sync",
+      "description": "Sincronizar dados",
+      "url": "/?sync=true",
+      "icons": [{ "src": "shortcuts/sync.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Privacidade",
+      "short_name": "Privacidade",
+      "description": "Configurações de privacidade",
+      "url": "/?tab=privacy",
+      "icons": [{ "src": "shortcuts/privacy.png", "sizes": "96x96" }]
+    }
+  ]
 }

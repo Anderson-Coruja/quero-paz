@@ -1,6 +1,14 @@
 // Serviço para lidar com notificações
 const notificationService = {
-  // Solicita permissão para enviar notificações
+  // Verifica o status atual da permissão de notificações
+  checkPermissionStatus() {
+    if (!('Notification' in window)) {
+      return 'unsupported';
+    }
+    return Notification.permission; // 'granted', 'denied' ou 'default'
+  },
+  
+  // Solicita permissão para enviar notificações - deve ser chamada em resposta a uma interação do usuário
   async requestPermission() {
     if (!('Notification' in window)) {
       console.log('Este navegador não suporta notificações');
@@ -12,8 +20,13 @@ const notificationService = {
     }
     
     if (Notification.permission !== 'denied') {
-      const permission = await Notification.requestPermission();
-      return permission === 'granted';
+      try {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+      } catch (error) {
+        console.error('Erro ao solicitar permissão para notificações:', error);
+        return false;
+      }
     }
     
     return false;
